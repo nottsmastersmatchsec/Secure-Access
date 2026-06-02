@@ -59,6 +59,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       background: white;
+      margin-bottom: 40px;
     }
 
     .calendar-wrapper iframe {
@@ -68,6 +69,26 @@
       width: 100%;
       height: 100%;
       border: 0;
+    }
+
+    /* Buttons */
+    .ics-button {
+      display: block;
+      background: #13294b;
+      color: white;
+      padding: 12px 15px;
+      margin: 10px auto;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+      max-width: 350px;
+      transition: 0.2s;
+    }
+
+    .ics-button:hover {
+      background: #0a1a33;
+      transform: translateY(-2px);
     }
 
     footer {
@@ -96,9 +117,11 @@
 </script>
 
 <div class="container">
+
   <h2>Season Fixtures Calendar</h2>
   <p>All Masters matches and events from the official Google Calendar.</p>
 
+  <!-- Live Google Calendar -->
   <div class="calendar-wrapper">
     <iframe 
       src="https://calendar.google.com/calendar/embed?src=2e273198dc4b7bd37e69628cdc8dea828f8ee3ded62d5241e0839bcd9c435410%40group.calendar.google.com&ctz=Europe%2FLondon"
@@ -106,6 +129,23 @@
       scrolling="no">
     </iframe>
   </div>
+
+  <h2>Download or Subscribe</h2>
+
+  <!-- ICS Download -->
+  <a class="ics-button" 
+     href="https://calendar.google.com/calendar/ical/2e273198dc4b7bd37e69628cdc8dea828f8ee3ded62d5241e0839bcd9c435410%40group.calendar.google.com/public/basic.ics" 
+     download>
+     Download Full Calendar (ICS)
+  </a>
+
+  <!-- RSS Feed -->
+  <a class="ics-button" 
+     href="https://calendar.google.com/calendar/ical/2e273198dc4b7bd37e69628cdc8dea828f8ee3ded62d5241e0839bcd9c435410%40group.calendar.google.com/public/basic.xml" 
+     target="_blank">
+     Subscribe via RSS Feed
+  </a>
+
 </div>
 
 <footer>
