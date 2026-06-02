@@ -50,27 +50,20 @@
       color: #0a1a33;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
+    /* Responsive Facebook box */
+    .fb-container {
+      max-width: 100%;
+      display: flex;
+      justify-content: center;
     }
 
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      text-decoration: none;
-      color: #222;
-      font-weight: 600;
-      transition: 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    .fb-container iframe {
+      width: 100%;
+      max-width: 500px;
+      height: 800px; /* Taller so the top image isn't cut */
+      border: none;
+      overflow: hidden;
+      border-radius: 8px;
     }
 
     footer {
@@ -80,11 +73,6 @@
       background: #0a1a33;
       color: white;
       font-size: 0.9rem;
-    }
-
-    iframe {
-      margin-top: 20px;
-      border-radius: 8px;
     }
   </style>
 </head>
@@ -110,16 +98,17 @@
   <p>Welcome to the Notts Masters Badminton Club website. Explore fixtures, players, and documents, or access the secure Captains Area.</p>
 
   <h2>Follow Us on Facebook</h2>
-  <iframe 
-    src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100077877812929&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true" 
-    width="500" 
-    height="600" 
-    style="border:none;overflow:hidden" 
-    scrolling="no" 
-    frameborder="0" 
-    allowfullscreen="true" 
-    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-  </iframe>
+
+  <div class="fb-container">
+    <iframe 
+      src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100077877812929&tabs=timeline&width=500&height=800&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
+      scrolling="no"
+      frameborder="0"
+      allowfullscreen="true"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+    </iframe>
+  </div>
+
 </div>
 
 <footer>
