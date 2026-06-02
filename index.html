@@ -50,20 +50,22 @@
       color: #0a1a33;
     }
 
-    /* Responsive Facebook box */
+    /* Guaranteed centred Facebook box */
     .fb-container {
       width: 100%;
-      display: flex;
-      justify-content: center;
+      display: block;          /* ensures full width on mobile */
+      text-align: center;      /* centres inline-block children */
     }
 
     .fb-container iframe {
+      display: inline-block;   /* allows text-align to centre it */
       width: 100%;
       max-width: 400px;
       height: 800px;
       border: none;
       overflow: hidden;
       border-radius: 8px;
+      margin: 0 auto;          /* fallback centring */
     }
 
     footer {
@@ -104,7 +106,6 @@
       src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100077877812929&tabs=timeline&width=400&height=800&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true"
       width="400"
       height="800"
-      style="border:none;overflow:hidden"
       scrolling="no"
       frameborder="0"
       allowfullscreen="true"
@@ -120,5 +121,6 @@
 
 </body>
 </html>
+
 
 
