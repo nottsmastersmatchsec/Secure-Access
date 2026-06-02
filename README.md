@@ -1,2 +1,2 @@
-# Notts Masters Players Page
+# Notts Masters Secure Access
 Password-protected landing page for my Google Sheet Players
