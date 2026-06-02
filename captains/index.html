@@ -53,13 +53,31 @@
       color: #0a1a33;
     }
 
-    input[type="password"] {
+    /* Password wrapper */
+    .password-wrapper {
+      position: relative;
       width: 100%;
-      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .password-wrapper input {
+      width: 100%;
+      padding: 10px 40px 10px 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 1rem;
-      margin-bottom: 15px;
+    }
+
+    /* Eye icon */
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #555;
+      user-select: none;
     }
 
     button {
@@ -120,7 +138,7 @@
 
 <header>
   <h1>Notts Masters Badminton</h1>
-  <p>Captains & Selectors Area — Secure Access</p>
+  <p>Captains Area — Secure Access</p>
 </header>
 
 <!-- Shared nav include -->
@@ -137,7 +155,12 @@
   <h2>Enter Password</h2>
   <p>This section is restricted to Captains & Selectors only.</p>
 
-  <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
+  <!-- Password with show/hide toggle -->
+  <div class="password-wrapper">
+    <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
+    <span class="toggle-password" id="togglePassword">👁️</span>
+  </div>
+
   <button id="submitBtn">Unlock</button>
 
   <div id="error" class="error">❌ Incorrect password. Please try again.</div>
@@ -160,11 +183,21 @@
   const DOC_URL_2 = "https://docs.google.com/spreadsheets/d/1MomVFN0gpfM_bYldQ5Df9CjwOkYRGOMSGtmv2PWyMiw/edit?gid=0#gid=0";
 
   const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
   const submitBtn = document.getElementById("submitBtn");
   const errorEl = document.getElementById("error");
   const successEl = document.getElementById("success");
   const docLink1 = document.getElementById("docLink1");
   const docLink2 = document.getElementById("docLink2");
+
+  // Show/hide password toggle
+  togglePassword.addEventListener("click", () => {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+
+    // Change icon
+    togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+  });
 
   submitBtn.addEventListener("click", () => {
     const value = passwordInput.value.trim();
