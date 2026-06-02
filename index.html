@@ -5,7 +5,6 @@
   <title>Notts Masters Badminton — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Reset GitHub Pages / theme padding */
     html, body {
       margin: 0;
       padding: 0;
@@ -17,18 +16,17 @@
       color: #222;
     }
 
-    /* Kill any outer GitHub wrapper spacing */
+    /* Remove any GitHub Pages wrapper spacing */
     body > div {
       margin: 0 !important;
       padding: 0 !important;
       max-width: 100% !important;
     }
 
-    /* Our own centred page wrapper */
+    /* Centre the whole page */
     .page-wrapper {
       max-width: 1000px;
       margin: 0 auto;
-      background: transparent;
     }
 
     header {
@@ -69,7 +67,7 @@
       color: #0a1a33;
     }
 
-    /* Facebook box – centred and responsive */
+    /* Facebook box – centred and mobile-safe */
     .fb-container {
       width: 100%;
       text-align: center;
@@ -78,11 +76,18 @@
     .fb-container iframe {
       display: inline-block;
       width: 100%;
-      max-width: 400px;
+      max-width: 360px; /* fits all modern phones */
       height: 800px;
       border: none;
       overflow: hidden;
       border-radius: 8px;
+    }
+
+    /* Extra shrink for very small screens */
+    @media (max-width: 360px) {
+      .fb-container iframe {
+        max-width: 320px;
+      }
     }
 
     footer {
@@ -98,6 +103,7 @@
 <body>
 
 <div class="page-wrapper">
+
   <header>
     <h1>Notts Masters Badminton</h1>
     <p>Official Club Website</p>
@@ -121,20 +127,20 @@
 
     <div class="fb-container">
       <iframe 
-        src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100077877812929&tabs=timeline&width=400&height=800&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true"
-        width="400"
-        height="800"
+        src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D100077877812929&tabs=timeline&width=320&height=800&small_header=true&adapt_container_width=true&hide_cover=true&show_facepile=true"
         scrolling="no"
         frameborder="0"
         allowfullscreen="true"
         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
       </iframe>
     </div>
+
   </div>
 
   <footer>
     © Notts Masters Badminton — Home
   </footer>
+
 </div>
 
 </body>
