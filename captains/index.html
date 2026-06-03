@@ -2,118 +2,97 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Captains & Selectors Area — Notts Masters Badminton</title>
+  <title>Captains Calendar — Notts Masters Badminton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      color: #222;
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
+    nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
+    nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px 40px; text-align: center; }
+
+    .auth-box {
+      max-width: 400px; margin: 40px auto; padding: 25px;
+      background: white; border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12); text-align: center;
     }
-    header {
-      background: #0a1a33;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    nav {
-      background: #13294b;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 10px 0;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 8px 15px;
-      font-weight: 600;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 15px;
-      color: #0a1a33;
-    }
-    .password-wrapper {
-      position: relative;
-      width: 100%;
-      margin-bottom: 15px;
-    }
+
+    .password-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
     .password-wrapper input {
-      width: 100%;
-      padding: 10px 40px 10px 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      box-sizing: border-box;
+      width: 100%; padding: 10px 40px 10px 10px;
+      border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;
     }
     .toggle-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #555;
-      user-select: none;
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%); cursor: pointer;
+      font-size: 1.2rem; color: #555;
     }
+
     button {
-      width: 100%;
-      padding: 12px;
+      width: 100%; padding: 12px; border-radius: 6px; border: none;
+      background: #1a73e8; color: #fff; font-size: 1rem; font-weight: 600;
+    }
+    button:hover { background: #1558b4; }
+
+    .error { margin-top: 12px; color: #c62828; font-size: 0.9rem; display: none; }
+
+    .logged-in-banner {
+      background: #e8f4ff;
+      padding: 12px 15px;
+      margin: 20px auto;
+      max-width: 600px;
       border-radius: 6px;
-      border: none;
-      background: #1a73e8;
-      color: #fff;
-      font-size: 1rem;
       font-weight: 600;
-      cursor: pointer;
+      color: #0a1a33;
     }
-    button:hover {
-      background: #1558b4;
+
+    .calendar-wrapper {
+      position: relative;
+      padding-bottom: 75%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: white;
+      margin-bottom: 40px;
     }
-    .error {
-      margin-top: 12px;
-      color: #c62828;
-      font-size: 0.9rem;
-      display: none;
+
+    .calendar-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
-    .success {
-      margin-top: 20px;
-      font-size: 1rem;
-      display: none;
-    }
-    .success a {
+
+    .ics-button {
       display: block;
-      margin: 12px 0;
-      padding: 12px;
-      background: #0a1a33;
+      background: #13294b;
       color: white;
-      border-radius: 6px;
+      padding: 12px 15px;
+      margin: 10px auto;
+      border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
-    }
-    .success a:hover {
-      background: #1a73e8;
-    }
-    footer {
-      margin-top: 40px;
-      padding: 20px;
       text-align: center;
-      background: #0a1a33;
-      color: white;
-      font-size: 0.9rem;
+      max-width: 350px;
+      transition: 0.2s;
+    }
+    .ics-button:hover { background: #0a1a33; transform: translateY(-2px); }
+
+    .back-button {
+      display: inline-block; margin: 25px auto 0; padding: 12px 20px;
+      background: #13294b; color: white; text-decoration: none;
+      font-weight: 600; border-radius: 8px;
+    }
+    .back-button:hover { background: #0a1a33; }
+
+    footer {
+      margin-top: 20px; padding: 20px;
+      text-align: center; background: #0a1a33; color: white;
     }
   </style>
 </head>
@@ -121,99 +100,152 @@
 
 <header>
   <h1>Notts Masters Badminton</h1>
-  <p>Captains & Selectors Area — Secure Access</p>
+  <p>Calendar — Captains & Selectors Area</p>
 </header>
 
 <div id="nav"></div>
 <script>
   fetch("/Home/nav.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("nav").innerHTML = data;
-    });
+    .then(r => r.text())
+    .then(html => document.getElementById("nav").innerHTML = html);
 </script>
 
 <div class="container">
-  <h2>Enter Password</h2>
-  <p>This section is restricted to Captains & Selectors only.</p>
 
-  <div class="password-wrapper">
-    <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
-    <span class="toggle-password" id="togglePassword">👁️</span>
+  <!-- PASSWORD BOX -->
+  <div id="authBox" class="auth-box">
+    <h2>Enter Password</h2>
+    <p>Restricted to Captains & Selectors.</p>
+
+    <div class="password-wrapper">
+      <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
+      <span class="toggle-password" id="togglePassword">👁️</span>
+    </div>
+
+    <button id="submitBtn">Unlock Calendar</button>
+    <div id="error" class="error">❌ Incorrect password. Please try again.</div>
   </div>
 
-  <button id="submitBtn">Unlock</button>
+  <!-- UNLOCKED CONTENT -->
+  <div id="calendarContainer" style="display:none;">
 
-  <div id="error" class="error">❌ Incorrect password. Please try again.</div>
+    <div class="logged-in-banner">
+      ✅ You are now logged in to the Captains & Selectors Area
+    </div>
 
-  <div id="success" class="success">
-    ✅ Access granted.<br><br>
-    <a id="docLink1" href="#">Notts Masters Players</a>
-    <a id="docLink2" href="#">Notts Masters Matches</a>
-    <a id="docLink3" href="#">Captains & Selectors Match Calendar</a>
+    <!-- CALENDAR -->
+    <div class="calendar-wrapper">
+      <iframe src="https://calendar.google.com/calendar/embed?height=700&wkst=1&bgcolor=%23ffffff&ctz=Europe%2FLondon&showCalendars=1&showTabs=1&showTz=0&src=d3f8306e6f53796b6ee44aae77df1396283908352c1e3ec7593355759e79897b%40group.calendar.google.com&src=1273dbd2004e8ad330077c93610506054398772a074f0e8cd827016aa2c89399%40group.calendar.google.com&src=d12108d7f120c616e9ab7e01ef343bcd56b46dc1e50352140ee9aabb4e028b2f%40group.calendar.google.com&src=25ff5b8d2b323533b3ab2c82bb1ffce938938ef2b8c4bd390c10bdb020f3e598%40group.calendar.google.com&src=cece91cf11d31b1e7482667250f58ecc498908f91bd1f8a0202bbb43806ad5d6%40group.calendar.google.com&src=52d3c78e00ce85009165da7acc8d9bca7d606599c7501d3deae3be1e70036097%40group.calendar.google.com&src=f566ccb484c73bf96a8192e4709e2ac38d79834e19b834f4d3484dad3f268169%40group.calendar.google.com&src=dbf6c37a00e4382d7d6831916dbdf724ef3d83b198c74ea3cf634ecd0645c824%40group.calendar.google.com&src=a734926c2b32b9e70c957b7c3fb75b8405aca9f7121f6e856be80f812a96cb0f%40group.calendar.google.com"></iframe>
+    </div>
+
+    <!-- HELP TEXT -->
+    <p style="max-width:700px;margin:25px auto 35px;font-weight:600;color:#0a1a33;">
+      ℹ️ To view specific age groups, click the calendar icon on the right of the calendar above and tick the age groups you want to display.
+      <br><br>
+      If you wish to add events to your Google Calendar, select the age groups and choose “Add to Google Calendar”.
+      <br><br>
+      Or use the download options below if you want to add the fixtures to other calendar apps.
+    </p>
+
+    <!-- DOWNLOAD SECTION -->
+    <h2>Download</h2>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/1273dbd2004e8ad330077c93610506054398772a074f0e8cd827016aa2c89399%40group.calendar.google.com/public/basic.ics" download="O40s.ics">Download O40s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/d12108d7f120c616e9ab7e01ef343bcd56b46dc1e50352140ee9aabb4e028b2f%40group.calendar.google.com/public/basic.ics" download="O45s.ics">Download O45s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/25ff5b8d2b323533b3ab2c82bb1ffce938938ef2b8c4bd390c10bdb020f3e598%40group.calendar.google.com/public/basic.ics" download="O50s.ics">Download O50s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/cece91cf11d31b1e7482667250f58ecc498908f91bd1f8a0202bbb43806ad5d6%40group.calendar.google.com/public/basic.ics" download="O55s.ics">Download O55s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/52d3c78e00ce85009165da7acc8d9bca7d606599c7501d3deae3be1e70036097%40group.calendar.google.com/public/basic.ics" download="O60s.ics">Download O60s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/f566ccb484c73bf96a8192e4709e2ac38d79834e19b834f4d3484dad3f268169%40group.calendar.google.com/public/basic.ics" download="O65s.ics">Download O65s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/dbf6c37a00e4382d7d6831916dbdf724ef3d83b198c74ea3cf634ecd0645c824%40group.calendar.google.com/public/basic.ics" download="O70s.ics">Download O70s Calendar (ICS)</a>
+
+    <a class="ics-button" href="https://calendar.google.com/calendar/ical/a734926c2b32b9e70c957b7c3fb75b8405aca9f7121f6e856be80f812a96cb0f%40group.calendar.google.com/public/basic.ics" download="Tournaments.ics">Download Tournaments Calendar (ICS)</a>
+
+    <!-- HELP PDF -->
+    <p style="margin-top:25px;font-weight:600;color:#0a1a33;">
+      📘 Need help installing an ICS file on your phone?
+    </p>
+
+    <a class="ics-button"
+       href="/Home/documents/storage/How%20to%20Install%20an%20ICS%20File%20on%20Your%20Phone.pdf"
+       target="_blank">
+       How to Install an ICS File on Your Phone (PDF)
+    </a>
+
+    <a href="/Home/captains/index.html" class="back-button">⬅ Back to Captains & Selectors Area</a>
   </div>
+
 </div>
 
 <footer>
-  © Notts Masters Badminton — Captains & Selectors Area
+  © Notts Masters Badminton — Captains Calendar
 </footer>
 
 <script>
   const PASSWORD = "YourStrongPassword123";
   const SESSION_KEY = "captainsAuth";
 
-  const DOC_URL_1 = "/Home/captains/players.html";
-  const DOC_URL_2 = "/Home/captains/matches.html";
-  const DOC_URL_3 = "/Home/captains/calendar.html";
-
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
   const submitBtn = document.getElementById("submitBtn");
   const errorEl = document.getElementById("error");
-  const successEl = document.getElementById("success");
-  const docLink1 = document.getElementById("docLink1");
-  const docLink2 = document.getElementById("docLink2");
-  const docLink3 = document.getElementById("docLink3");
+  const authBox = document.getElementById("authBox");
+  const calendarContainer = document.getElementById("calendarContainer");
 
-  // If already authenticated this session, show links immediately
+  function showCalendar() {
+    authBox.style.display = "none";
+    calendarContainer.style.display = "block";
+  }
+
   if (sessionStorage.getItem(SESSION_KEY) === PASSWORD) {
-    successEl.style.display = "block";
-    docLink1.href = DOC_URL_1;
-    docLink2.href = DOC_URL_2;
-    docLink3.href = DOC_URL_3;
+    showCalendar();
   }
 
   togglePassword.addEventListener("click", () => {
-    const type = passwordInput.type === "password" ? "text" : "password";
-    passwordInput.type = type;
-    togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.textContent = passwordInput.type === "password" ? "👁️" : "🙈";
   });
 
   function unlock() {
-    const value = passwordInput.value.trim();
-    if (value === PASSWORD) {
+    if (passwordInput.value.trim() === PASSWORD) {
       errorEl.style.display = "none";
-      successEl.style.display = "block";
-
-      // store in session so other pages auto-unlock
       sessionStorage.setItem(SESSION_KEY, PASSWORD);
-
-      docLink1.href = DOC_URL_1;
-      docLink2.href = DOC_URL_2;
-      docLink3.href = DOC_URL_3;
+      showCalendar();
+      resetLogoutTimer();
     } else {
-      successEl.style.display = "none";
       errorEl.style.display = "block";
     }
   }
 
   submitBtn.addEventListener("click", unlock);
+  passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
 
-  passwordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      unlock();
-    }
-  });
+  /* -------------------------
+     AUTO-LOGOUT (20 minutes)
+     ------------------------- */
+  const AUTO_LOGOUT_MINUTES = 20;
+  let logoutTimer;
+
+  function resetLogoutTimer() {
+    clearTimeout(logoutTimer);
+    logoutTimer = setTimeout(() => {
+      sessionStorage.removeItem(SESSION_KEY);
+      location.reload();
+    }, AUTO_LOGOUT_MINUTES * 60 * 1000);
+  }
+
+  if (sessionStorage.getItem(SESSION_KEY) === PASSWORD) {
+    resetLogoutTimer();
+    window.addEventListener("mousemove", resetLogoutTimer);
+    window.addEventListener("keydown", resetLogoutTimer);
+    window.addEventListener("click", resetLogoutTimer);
+    window.addEventListener("scroll", resetLogoutTimer);
+  }
 </script>
 
 </body>
