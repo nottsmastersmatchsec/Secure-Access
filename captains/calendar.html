@@ -10,6 +10,7 @@
     nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
     nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
     nav a:hover { text-decoration: underline; }
+
     .container { max-width: 1000px; margin: 40px auto; padding: 0 20px 40px; text-align: center; }
 
     .auth-box {
@@ -82,6 +83,7 @@
 
 <div class="container">
 
+  <!-- PASSWORD BOX -->
   <div id="authBox" class="auth-box">
     <h2>Enter Password</h2>
     <p>Restricted to Captains & Selectors.</p>
@@ -92,4 +94,68 @@
     </div>
 
     <button id="submitBtn">Unlock Calendar</button>
-    <div id="error" class="error">❌ Incorrect password. Please try
+    <div id="error" class="error">❌ Incorrect password. Please try again.</div>
+  </div>
+
+  <!-- UNLOCKED CONTENT -->
+  <div id="calendarContainer" style="display:none;">
+
+    <div class="logged-in-banner">
+      ✅ You are now logged in to the Captains & Selectors Area
+    </div>
+
+    <iframe
+      src="https://calendar.google.com/calendar/embed?src=c50382fcc0e427887b7354977346cdaec784c60148fbff70851b4c69276efc88%40group.calendar.google.com&ctz=Europe%2FLondon">
+    </iframe>
+
+    <a href="/Home/captains/index.html" class="back-button">⬅ Back to Captains & Selectors Area</a>
+  </div>
+
+</div>
+
+<footer>
+  © Notts Masters Badminton — Captains Calendar
+</footer>
+
+<script>
+  const PASSWORD = "YourStrongPassword123";
+  const SESSION_KEY = "captainsAuth";
+
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+  const submitBtn = document.getElementById("submitBtn");
+  const errorEl = document.getElementById("error");
+  const authBox = document.getElementById("authBox");
+  const calendarContainer = document.getElementById("calendarContainer");
+
+  function showCalendar() {
+    authBox.style.display = "none";
+    calendarContainer.style.display = "block";
+  }
+
+  // Auto-unlock if session already authenticated
+  if (sessionStorage.getItem(SESSION_KEY) === PASSWORD) {
+    showCalendar();
+  }
+
+  togglePassword.addEventListener("click", () => {
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.textContent = passwordInput.type === "password" ? "👁️" : "🙈";
+  });
+
+  function unlock() {
+    if (passwordInput.value.trim() === PASSWORD) {
+      errorEl.style.display = "none";
+      sessionStorage.setItem(SESSION_KEY, PASSWORD);
+      showCalendar();
+    } else {
+      errorEl.style.display = "block";
+    }
+  }
+
+  submitBtn.addEventListener("click", unlock);
+  passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+</script>
+
+</body>
+</html>
