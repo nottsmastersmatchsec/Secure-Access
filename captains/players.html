@@ -38,15 +38,14 @@
     .error { margin-top: 12px; color: #c62828; font-size: 0.9rem; display: none; }
 
     .logged-in-banner {
-  background: #e8f4ff;
-  padding: 12px 15px;
-  margin: 20px auto;
-  max-width: 600px;
-  border-radius: 6px;
-  font-weight: 600;
-  color: #0a1a33;
-}
-
+      background: #e8f4ff;
+      padding: 12px 15px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #0a1a33;
+    }
 
     iframe {
       width: 100%; height: 800px; border: 0;
@@ -79,6 +78,9 @@
     .then(r => r.text())
     .then(html => document.getElementById("nav").innerHTML = html);
 </script>
+
+<!-- LOAD SHARED PASSWORD FILE -->
+<script src="/Home/auth/password.js"></script>
 
 <div class="container">
 
@@ -113,7 +115,7 @@
 </footer>
 
 <script>
-  const PASSWORD = "YourStrongPassword123";
+  const PASSWORD = window.CAPTAINS_PASSWORD;
   const SESSION_KEY = "captainsAuth";
 
   const passwordInput = document.getElementById("password");
