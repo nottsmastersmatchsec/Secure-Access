@@ -170,6 +170,7 @@
     ✅ Access granted.<br><br>
     <a id="docLink1" href="#" target="_blank" rel="noopener noreferrer">Notts Masters Players</a>
     <a id="docLink2" href="#" target="_blank" rel="noopener noreferrer">Notts Masters Matches</a>
+    <a id="docLink2" href="#" target="_blank" rel="noopener noreferrer">Captains & Selectors Match Calendar</a>
   </div>
 </div>
 
@@ -182,6 +183,7 @@
 
   const DOC_URL_1 = "https://docs.google.com/spreadsheets/d/14KBz9GBGR7p48cdM8p34FPGbhoaRUHX3OUhXRh9deNs/edit?gid=1020199153#gid=1020199153";
   const DOC_URL_2 = "https://docs.google.com/spreadsheets/d/1MomVFN0gpfM_bYldQ5Df9CjwOkYRGOMSGtmv2PWyMiw/edit?gid=0#gid=0";
+  const DOC_URL_3 = "https://docs.google.com/spreadsheets/d/1MomVFN0gpfM_bYldQ5Df9CjwOkYRGOMSGtmv2PWyMiw/edit?gid=0#gid=0";
 
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
@@ -190,6 +192,7 @@
   const successEl = document.getElementById("success");
   const docLink1 = document.getElementById("docLink1");
   const docLink2 = document.getElementById("docLink2");
+  const docLink3 = document.getElementById("docLink3");
 
   // Show/hide password toggle
   togglePassword.addEventListener("click", () => {
@@ -207,6 +210,7 @@
       successEl.style.display = "block";
       docLink1.href = DOC_URL_1;
       docLink2.href = DOC_URL_2;
+      docLink2.href = DOC_URL_3;
     } else {
       successEl.style.display = "none";
       errorEl.style.display = "block";
