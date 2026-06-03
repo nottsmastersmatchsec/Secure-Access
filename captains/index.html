@@ -5,132 +5,23 @@
   <title>Captains & Selectors Area — Notts Masters Badminton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      color: #222;
-    }
-
-    header {
-      background: #0a1a33;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    nav {
-      background: #13294b;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 10px 0;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 8px 15px;
-      font-weight: 600;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      max-width: 500px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 15px;
-      color: #0a1a33;
-    }
-
-    .password-wrapper {
-      position: relative;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .password-wrapper input {
-      width: 100%;
-      padding: 10px 40px 10px 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    .toggle-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: #555;
-      user-select: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 6px;
-      border: none;
-      background: #1a73e8;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1558b4;
-    }
-
-    .error {
-      margin-top: 12px;
-      color: #c62828;
-      font-size: 0.9rem;
-      display: none;
-    }
-
-    .success {
-      margin-top: 20px;
-      font-size: 1rem;
-      display: none;
-    }
-
-    .success a {
-      display: block;
-      margin: 12px 0;
-      padding: 12px;
-      background: #0a1a33;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .success a:hover {
-      background: #1a73e8;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding: 20px;
-      text-align: center;
-      background: #0a1a33;
-      color: white;
-      font-size: 0.9rem;
-    }
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
+    nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
+    nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    .container { max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 6px 16px rgba(0,0,0,0.12); text-align: center; }
+    h2 { margin-bottom: 15px; color: #0a1a33; }
+    .password-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
+    .password-wrapper input { width: 100%; padding: 10px 40px 10px 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
+    .toggle-password { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #555; }
+    button { width: 100%; padding: 12px; border-radius: 6px; border: none; background: #1a73e8; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    button:hover { background: #1558b4; }
+    .error { margin-top: 12px; color: #c62828; font-size: 0.9rem; display: none; }
+    .success { margin-top: 20px; font-size: 1rem; display: none; }
+    .success a { display: block; margin: 12px 0; padding: 12px; background: #0a1a33; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; }
+    .success a:hover { background: #1a73e8; }
+    footer { margin-top: 40px; padding: 20px; text-align: center; background: #0a1a33; color: white; }
   </style>
 </head>
 <body>
@@ -143,15 +34,12 @@
 <div id="nav"></div>
 <script>
   fetch("/Home/nav.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("nav").innerHTML = data;
-    });
+    .then(r => r.text())
+    .then(html => document.getElementById("nav").innerHTML = html);
 </script>
 
 <div class="container">
   <h2>Enter Password</h2>
-  <p>This section is restricted to Captains & Selectors only.</p>
 
   <div class="password-wrapper">
     <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
@@ -160,31 +48,24 @@
 
   <button id="submitBtn">Unlock</button>
 
-  <div id="error" class="error">❌ Incorrect password. Please try again.</div>
+  <div id="error" class="error">❌ Incorrect password.</div>
 
   <div id="success" class="success">
-    ✅ Access granted.<br><br>
-
-    <a id="docLink1" href="#" target="_blank">Notts Masters Players</a>
-    <a id="docLink2" href="#" target="_blank">Notts Masters Matches</a>
-
-    <!-- Calendar opens in SAME window -->
-    <a id="docLink3" href="#">Captains & Selectors Match Calendar</a>
-
+    <a id="docLink1" href="#">Players</a>
+    <a id="docLink2" href="#">Matches</a>
+    <a id="docLink3" href="#">Calendar</a>
   </div>
 </div>
 
 <footer>
-  © Notts Masters Badminton — Captains & Selectors Area
+  © Notts Masters Badminton — Captains Area
 </footer>
 
 <script>
   const PASSWORD = "YourStrongPassword123";
 
-  const DOC_URL_1 = "https://docs.google.com/spreadsheets/d/14KBz9GBGR7p48cdM8p34FPGbhoaRUHX3OUhXRh9deNs/edit?gid=1020199153#gid=1020199153";
-  const DOC_URL_2 = "https://docs.google.com/spreadsheets/d/1MomVFN0gpfM_bYldQ5Df9CjwOkYRGOMSGtmv2PWyMiw/edit?gid=0#gid=0";
-
-  /* Calendar page (same window) */
+  const DOC_URL_1 = "/Home/captains/players.html";
+  const DOC_URL_2 = "/Home/captains/matches.html";
   const DOC_URL_3 = "/Home/captains/calendar.html";
 
   const passwordInput = document.getElementById("password");
@@ -197,31 +78,20 @@
   const docLink3 = document.getElementById("docLink3");
 
   togglePassword.addEventListener("click", () => {
-    const type = passwordInput.type === "password" ? "text" : "password";
-    passwordInput.type = type;
-    togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.textContent = passwordInput.type === "password" ? "👁️" : "🙈";
   });
 
   submitBtn.addEventListener("click", () => {
-    const value = passwordInput.value.trim();
-
-    if (value === PASSWORD) {
+    if (passwordInput.value.trim() === PASSWORD) {
       errorEl.style.display = "none";
       successEl.style.display = "block";
-
       docLink1.href = DOC_URL_1;
       docLink2.href = DOC_URL_2;
       docLink3.href = DOC_URL_3;
-
     } else {
       successEl.style.display = "none";
       errorEl.style.display = "block";
-    }
-  });
-
-  passwordInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      submitBtn.click();
     }
   });
 </script>
