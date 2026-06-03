@@ -66,7 +66,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 1rem;
-      box-sizing: border-box; /* FIX: prevents overflow */
+      box-sizing: border-box; /* prevents overflow */
     }
 
     /* Eye icon */
@@ -139,7 +139,7 @@
 
 <header>
   <h1>Notts Masters Badminton</h1>
-  <p>Captains & Selectors Area — Secure Access</p>
+  <p>Captains Area — Secure Access</p>
 </header>
 
 <!-- Shared nav include -->
@@ -170,7 +170,7 @@
     ✅ Access granted.<br><br>
     <a id="docLink1" href="#" target="_blank" rel="noopener noreferrer">Notts Masters Players</a>
     <a id="docLink2" href="#" target="_blank" rel="noopener noreferrer">Notts Masters Matches</a>
-    <a id="docLink2" href="#" target="_blank" rel="noopener noreferrer">Captains & Selectors Match Calendar</a>
+    <a id="docLink3" href="#" target="_blank" rel="noopener noreferrer">Captains & Selectors Match Calendar</a>
   </div>
 </div>
 
@@ -185,7 +185,6 @@
   const DOC_URL_2 = "https://docs.google.com/spreadsheets/d/1MomVFN0gpfM_bYldQ5Df9CjwOkYRGOMSGtmv2PWyMiw/edit?gid=0#gid=0";
   const DOC_URL_3 = "/Captains/calendar.html";
 
-
   const passwordInput = document.getElementById("password");
   const togglePassword = document.getElementById("togglePassword");
   const submitBtn = document.getElementById("submitBtn");
@@ -199,8 +198,6 @@
   togglePassword.addEventListener("click", () => {
     const type = passwordInput.type === "password" ? "text" : "password";
     passwordInput.type = type;
-
-    // Change icon
     togglePassword.textContent = type === "password" ? "👁️" : "🙈";
   });
 
@@ -211,7 +208,7 @@
       successEl.style.display = "block";
       docLink1.href = DOC_URL_1;
       docLink2.href = DOC_URL_2;
-      docLink2.href = DOC_URL_3;
+      docLink3.href = DOC_URL_3;
     } else {
       successEl.style.display = "none";
       errorEl.style.display = "block";
