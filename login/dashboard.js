@@ -7,6 +7,9 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
+/* ------------------------------
+   FIREBASE CONFIG
+--------------------------------*/
 const firebaseConfig = {
   apiKey: "AIzaSyCW0rdId5Qm7pBPx9x38WokCl_--RzlSqU",
   authDomain: "notts-masters-dashboard.firebaseapp.com",
@@ -20,9 +23,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// REPLACE with your Apps Script Web App URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzVyybiZpUBjJ1MidS8ZFk-XgPfFlm2rZuAWAXBW99wxgNURZLCuxxRS6IR5lq5zLhN4w/exec";
+/* ------------------------------
+   BACKEND URL
+--------------------------------*/
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbzVyybiZpUBjJ1MidS8ZFk-XgPfFlm2rZuAWAXBW99wxgNURZLCuxxRS6IR5lq5zLhN4w/exec";
 
+/* ------------------------------
+   DOM ELEMENTS
+--------------------------------*/
 const loginScreen = document.getElementById("login-screen");
 const dashboard = document.getElementById("dashboard");
 const loginEmailInput = document.getElementById("login-email");
@@ -45,8 +54,11 @@ const captainAgeFilter = document.getElementById("captain-age-filter");
 const refreshAllBtn = document.getElementById("refresh-all-btn");
 const roleBanner = document.getElementById("role-banner");
 
-let currentProfile = null; // {allowed, role, displayName, ageGroup}
+let currentProfile = null;
 
+/* ------------------------------
+   MAGIC LINK LOGIN
+--------------------------------*/
 const actionCodeSettings = {
   url: "https://nottsmastersbadminton.github.io/PlayersDashboard/",
   handleCodeInApp: true
@@ -63,74 +75,56 @@ sendLinkBtn.addEventListener("click", async () => {
     window.localStorage.setItem("emailForSignIn", email);
     loginMessage.textContent = "Sign-in link sent. Check your email.";
   } catch (err) {
-    console.error(err);
-    loginMessage.textContent = "Error sending link. Please try again.";
+    loginMessage.textContent = "Error sending link.";
   }
 });
 
 if (isSignInWithEmailLink(auth, window.location.href)) {
   let email = window.localStorage.getItem("emailForSignIn");
-  if (!email) {
-    email = window.prompt("Please confirm your email for sign-in");
-  }
+  if (!email) email = window.prompt("Confirm your email");
   signInWithEmailLink(auth, email, window.location.href)
-    .then(() => {
-      window.localStorage.removeItem("emailForSignIn");
-    })
-    .catch(err => {
-      console.error(err);
-      loginMessage.textContent = "Error completing sign-in.";
-    });
+    .then(() => window.localStorage.removeItem("emailForSignIn"))
+    .catch(() => (loginMessage.textContent = "Sign-in error."));
 }
 
-onAuthStateChanged(auth, async user => {
+/* ------------------------------
+   AUTH STATE
+--------------------------------*/
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    currentProfile = null;
     showLogin();
     return;
   }
 
-  try {
-    const res = await fetch(
-      SCRIPT_URL +
-        "?action=getProfile&email=" +
-        encodeURIComponent(user.email)
-    );
-    const profile = await res.json(); // {allowed, role, displayName, ageGroup}
-    if (!profile.allowed) {
-      await auth.signOut();
-      loginMessage.textContent =
-        "Your email is not authorised to access this system.";
-      showLogin();
-      return;
-    }
+  // Fetch profile from backend
+  const res = await fetch(
+    `${SCRIPT_URL}?action=getProfile&email=${encodeURIComponent(user.email)}`
+  );
+  const profile = await res.json();
 
-    currentProfile = profile;
-    showDashboard(user, profile);
-    if (profile.ageGroup && ageGroupSelect.value === "") {
-      ageGroupSelect.value = profile.ageGroup;
-    }
-    await loadPlayerEntries(user);
-    if (isFullAccess(profile)) {
-      enableCaptainView(user);
-    } else {
-      disableCaptainView();
-    }
-  } catch (err) {
-    console.error(err);
-    loginMessage.textContent =
-      "Error checking access. Please try again later.";
+  if (!profile.allowed) {
     await auth.signOut();
+    loginMessage.textContent = "Your email is not authorised.";
     showLogin();
+    return;
   }
+
+  currentProfile = profile;
+  showDashboard(user, profile);
+
+  if (profile.ageGroup && ageGroupSelect.value === "") {
+    ageGroupSelect.value = profile.ageGroup;
+  }
+
+  await loadPlayerEntries(user);
+
+  if (isFullAccess(profile)) enableCaptainView(user);
+  else disableCaptainView();
 });
 
-logoutBtn.addEventListener("click", async () => {
-  await auth.signOut();
-});
+logoutBtn.addEventListener("click", () => auth.signOut());
 
 function isFullAccess(profile) {
-  if (!profile) return false;
   const role = (profile.role || "").toLowerCase();
   return role === "captain" || role === "selector";
 }
@@ -138,8 +132,7 @@ function isFullAccess(profile) {
 function showDashboard(user, profile) {
   loginScreen.classList.add("hidden");
   dashboard.classList.remove("hidden");
-  const name = profile.displayName || user.email.split("@")[0];
-  userInfo.textContent = `${name} (${user.email})`;
+  userInfo.textContent = `${profile.displayName} (${user.email})`;
   roleBanner.textContent = isFullAccess(profile)
     ? "Role: Captain / Selector (full access)"
     : "Role: Player (your entries only)";
@@ -150,6 +143,9 @@ function showLogin() {
   loginScreen.classList.remove("hidden");
 }
 
+/* ------------------------------
+   ADD ENTRY
+--------------------------------*/
 addEntryBtn.addEventListener("click", async () => {
   const user = auth.currentUser;
   if (!user || !currentProfile) return;
@@ -159,7 +155,7 @@ addEntryBtn.addEventListener("click", async () => {
   const end = endInput.value;
 
   if (!ageGroup || !start || !end) {
-    formMessage.textContent = "Please fill in age group, start and end.";
+    formMessage.textContent = "Please fill in all fields.";
     return;
   }
 
@@ -177,62 +173,63 @@ addEntryBtn.addEventListener("click", async () => {
     }
   };
 
-  try {
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    formMessage.textContent = "Unavailability added.";
-    startInput.value = "";
-    endInput.value = "";
-    await loadPlayerEntries(user);
-    if (isFullAccess(currentProfile)) {
-      await loadAllEntries();
-    }
-  } catch (err) {
-    console.error(err);
-    formMessage.textContent = "Error adding entry.";
-  }
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  formMessage.textContent = "Unavailability added.";
+  startInput.value = "";
+  endInput.value = "";
+
+  await loadPlayerEntries(user);
+  if (isFullAccess(currentProfile)) await loadAllEntries();
 });
 
+/* ------------------------------
+   LOAD PLAYER ENTRIES
+--------------------------------*/
 async function loadPlayerEntries(user) {
   playerTableBody.innerHTML = "";
-  try {
-    const res = await fetch(
-      SCRIPT_URL + "?action=getAvailability&email=" + encodeURIComponent(user.email)
+
+  const res = await fetch(
+    `${SCRIPT_URL}?action=getAvailability&email=${encodeURIComponent(
+      user.email
+    )}`
+  );
+  const data = await res.json();
+
+  data.forEach((row) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.ageGroup}</td>
+      <td>${row.startDateTime}</td>
+      <td>${row.endDateTime}</td>
+      <td>${row.status}</td>
+      <td><button data-id="${row.eventId}" class="delete-btn">Delete</button></td>
+    `;
+    playerTableBody.appendChild(tr);
+  });
+
+  playerTableBody.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () =>
+      deleteEntry(btn.dataset.id, user)
     );
-    const data = await res.json();
-
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.ageGroup}</td>
-        <td>${row.startDateTime}</td>
-        <td>${row.endDateTime}</td>
-        <td>${row.status}</td>
-        <td>
-          <button data-id="${row.eventId}" class="delete-btn">Delete</button>
-        </td>
-      `;
-      playerTableBody.appendChild(tr);
-    });
-
-    playerTableBody.querySelectorAll(".delete-btn").forEach(btn => {
-      btn.addEventListener("click", () => deleteEntry(btn.dataset.id, user));
-    });
-  } catch (err) {
-    console.error(err);
-  }
+  });
 }
 
+/* ------------------------------
+   CAPTAIN VIEW
+--------------------------------*/
 function enableCaptainView(user) {
   captainControls.classList.remove("hidden");
   captainTableWrapper.classList.remove("hidden");
 
   refreshAllBtn.onclick = () => loadAllEntries();
   captainAgeFilter.onchange = () => loadAllEntries();
+
   loadAllEntries();
 }
 
@@ -245,36 +242,35 @@ async function loadAllEntries() {
   captainTableBody.innerHTML = "";
   const filterAge = captainAgeFilter.value;
 
-  try {
-    const res = await fetch(SCRIPT_URL + "?action=getAllAvailability");
-    const data = await res.json();
+  const res = await fetch(`${SCRIPT_URL}?action=getAllAvailability`);
+  const data = await res.json();
 
-    data
-      .filter(row => !filterAge || row.ageGroup === filterAge)
-      .forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.playerName}</td>
-          <td>${row.playerEmail}</td>
-          <td>${row.ageGroup}</td>
-          <td>${row.startDateTime}</td>
-          <td>${row.endDateTime}</td>
-          <td>${row.status}</td>
-          <td>
-            <button data-id="${row.eventId}" class="delete-btn">Delete</button>
-          </td>
-        `;
-        captainTableBody.appendChild(tr);
-      });
-
-    captainTableBody.querySelectorAll(".delete-btn").forEach(btn => {
-      btn.addEventListener("click", () => deleteEntry(btn.dataset.id, auth.currentUser));
+  data
+    .filter((row) => !filterAge || row.ageGroup === filterAge)
+    .forEach((row) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.playerName}</td>
+        <td>${row.playerEmail}</td>
+        <td>${row.ageGroup}</td>
+        <td>${row.startDateTime}</td>
+        <td>${row.endDateTime}</td>
+        <td>${row.status}</td>
+        <td><button data-id="${row.eventId}" class="delete-btn">Delete</button></td>
+      `;
+      captainTableBody.appendChild(tr);
     });
-  } catch (err) {
-    console.error(err);
-  }
+
+  captainTableBody.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", () =>
+      deleteEntry(btn.dataset.id, auth.currentUser)
+    );
+  });
 }
 
+/* ------------------------------
+   DELETE ENTRY
+--------------------------------*/
 async function deleteEntry(eventId, user) {
   const payload = {
     action: "deleteAvailability",
@@ -282,18 +278,13 @@ async function deleteEntry(eventId, user) {
     email: user.email
   };
 
-  try {
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    await loadPlayerEntries(user);
-    if (isFullAccess(currentProfile)) {
-      await loadAllEntries();
-    }
-  } catch (err) {
-    console.error(err);
-  }
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  await loadPlayerEntries(user);
+  if (isFullAccess(currentProfile)) await loadAllEntries();
 }
