@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Tournaments — Notts Masters Badminton</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       margin: 0;
@@ -20,48 +19,62 @@
       text-align: center;
     }
 
+    nav {
+      background: #13294b;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 8px 15px;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
     .container {
-      max-width: 900px;
+      max-width: 800px;
       margin: 40px auto;
       padding: 0 20px;
       text-align: center;
     }
 
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 40px;
-      flex-wrap: wrap;
+    h2 {
+      margin-bottom: 20px;
+      color: #0a1a33;
     }
 
-    .btn {
-      display: inline-block;
-      padding: 20px 40px;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
       border-radius: 10px;
-      font-size: 1.4rem;
-      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       text-decoration: none;
-      color: white;
+      color: #222;
+      font-weight: 600;
       transition: 0.2s;
     }
 
-    .senior {
-      background: #0077cc;
-    }
-    .senior:hover {
-      background: #005fa3;
-    }
-
-    .masters {
-      background: #444;
-    }
-    .masters:hover {
-      background: #222;
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     }
 
     footer {
-      margin-top: 60px;
+      margin-top: 50px;
       padding: 20px;
       text-align: center;
       background: #0a1a33;
@@ -70,11 +83,10 @@
     }
   </style>
 </head>
-
 <body>
 
 <header>
-  <h1>Tournaments</h1>
+  <h1>Notts Masters Badminton</h1>
   <p>Senior & Masters Tournament Links</p>
 </header>
 
@@ -89,16 +101,12 @@
 </script>
 
 <div class="container">
-  <h2>Select Tournament Type</h2>
+  <h2>Choose Challenge</h2>
+  <p>Select from current or previous to view.</p>
 
-  <div class="button-row">
-    <a class="btn senior" href="https://badminfo.com/Seniors" target="_blank">
-      Senior Tournaments
-    </a>
-
-    <a class="btn masters" href="https://badminfo.com/Masters" target="_blank">
-      Masters Tournaments
-    </a>
+  <div class="grid">
+    <a class="card" href="https://badminfo.com/Seniors">Senior Tournaments</a>
+    <a class="card" href="href="https://badminfo.com/Masters">Masters Tournaments</a>
   </div>
 </div>
 
