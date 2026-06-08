@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<h2>Welcome to the Dashboard</h2>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+  const supabase = supabase.createClient(
+    "YOUR_SUPABASE_URL",
+    "YOUR_SUPABASE_ANON_KEY"
+  );
+
+  async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      window.location.href = "login.html";
+    }
+  }
+
+  checkSession();
+
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
 
