@@ -64,37 +64,33 @@
   <p id="status" style="margin-top:15px; color:#444;"></p>
 </div>
 
-<script>
-  // Correct Supabase v2 client
-  const supabase = window.supabase.createClient(
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const supabase = createClient(
     "https://oqibuxukayzipkqxejjj.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
   );
 
-  async function signup() {
+  window.signup = async function () {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const status = document.getElementById("status");
 
     status.innerText = "Creating account…";
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password
-    });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       status.innerText = error.message;
       return;
     }
 
-    status.innerText = "Account created! Redirecting to login…";
-
-    setTimeout(() => {
-      window.location.href = "login.html";
-    }, 1200);
-  }
+    status.innerText = "Account created! Redirecting…";
+    setTimeout(() => (window.location.href = "login.html"), 1200);
+  };
 </script>
+
 
 </body>
 </html>
