@@ -51,19 +51,19 @@
   <p id="roleDisplay">Loading your role…</p>
 
   <!-- ROLE‑BASED BUTTONS -->
-  <button id="adminBtn" class="menu-btn" style="display:none;" onclick="location.href='admin.html'">
+  <button id="adminBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/admin.html'">
     Admin Panel
   </button>
 
-  <button id="captainBtn" class="menu-btn" style="display:none;" onclick="location.href='captain.html'">
+  <button id="captainBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/captain.html'">
     Captain Area
   </button>
 
-  <button id="financeBtn" class="menu-btn" style="display:none;" onclick="location.href='finance.html'">
+  <button id="financeBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/finance.html'">
     Finance Area
   </button>
 
-  <button id="coordBtn" class="menu-btn" style="display:none;" onclick="location.href='coordinator.html'">
+  <button id="coordBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/coordinator.html'">
     Coordinator Area
   </button>
 
@@ -102,25 +102,15 @@
 
     // SHOW BUTTONS BASED ON ROLE
     if (role === "admin") {
-      document.getElementById("adminBtn").style.display = "block";
-      document.getElementById("captainBtn").style.display = "block";
-      document.getElementById("financeBtn").style.display = "block";
-      document.getElementById("coordBtn").style.display = "block";
+      adminBtn.style.display = "block";
+      captainBtn.style.display = "block";
+      financeBtn.style.display = "block";
+      coordBtn.style.display = "block";
     }
 
-    if (role === "captain") {
-      document.getElementById("captainBtn").style.display = "block";
-    }
-
-    if (role === "finance") {
-      document.getElementById("financeBtn").style.display = "block";
-    }
-
-    if (role === "coordinator") {
-      document.getElementById("coordBtn").style.display = "block";
-    }
-
-    // Players see no extra buttons
+    if (role === "captain") captainBtn.style.display = "block";
+    if (role === "finance") financeBtn.style.display = "block";
+    if (role === "coordinator") coordBtn.style.display = "block";
   }
 
   loadUserRole();
