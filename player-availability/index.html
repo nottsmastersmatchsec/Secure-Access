@@ -20,9 +20,9 @@
     .then(html => document.getElementById("nav").innerHTML = html);
 </script>
 
-<div style="max-width:800px;margin:40px auto;text-align:center;font-size:1.2rem;">
+<div style="max-width:900px;margin:40px auto;text-align:center;font-size:1.2rem;">
   <p>Redirecting you to the login page…</p>
-  <p>If nothing happens, <a href="/Home/login/login.html?redirect=availability">click here to login</a>.</p>
+  <p>If nothing happens, <a href="/Home/login/login.html?redirect=availability">click here</a>.</p>
 </div>
 
 <footer style="margin-top:40px;padding:20px;text-align:center;background:#0a1a33;color:white;">
@@ -31,7 +31,9 @@
 
 <script>
   // Redirect AFTER the page loads
-  window.location.href = "/Home/login/login.html?redirect=availability";
+  setTimeout(() => {
+    window.location.href = "/Home/login/login.html?redirect=availability";
+  }, 50);
 </script>
 
 </body>
