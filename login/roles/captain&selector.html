@@ -30,7 +30,7 @@
 
   async function protectPage() {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) window.location.href = "login.html";
+    if (!session) window.location.href = "../login.html";
 
     const { data } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
     if (data.role !== "captain" && data.role !== "admin") {
@@ -42,7 +42,7 @@
 
   async function logout() {
     await supabase.auth.signOut();
-    window.location.href = "login.html";
+    window.location.href = "../login.html";
   }
 </script>
 
