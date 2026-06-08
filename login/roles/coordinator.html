@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coordinator Area</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body { font-family: Arial; padding: 40px; background: #f5f5f5; }
+    .card { background: white; padding: 25px; border-radius: 10px; max-width: 500px; margin: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+    button { padding: 10px 20px; margin-top: 20px; border: none; background: #0077cc; color: white;
+             border-radius: 6px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #005fa3; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Coordinator Dashboard</h2>
+  <p>Fixtures, availability, and operations tools.</p>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+  const supabase = supabase.createClient(
+    "https://oqibuxukayzipkqxejjj.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
+  );
+
+  async function protectPage() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) window.location.href = "login.html";
+
+    const { data } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
+    if (data.role !== "coordinator" && data.role !== "admin") {
+      window.location.href = "no-access.html";
+    }
+  }
+
+  protectPage();
+
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = "login.html";
+  }
+</script>
+
+</body>
+</html>
