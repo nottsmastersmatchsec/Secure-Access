@@ -8,86 +8,25 @@
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-    }
-
+    html, body { margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, sans-serif;
       background: #f5f5f5;
       color: #222;
       overflow-x: hidden;
     }
-
-    body > div {
-      margin: 0 !important;
-      padding: 0 !important;
-      max-width: 100% !important;
-    }
-
-    .page-wrapper {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    header {
-      background: #0a1a33;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    nav {
-      background: #13294b;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 10px 0;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 8px 15px;
-      font-weight: 600;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      max-width: 100%;
-      margin: 40px auto;
-      padding: 0 20px;
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #0a1a33;
-    }
-
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
+    .page-wrapper { max-width: 1000px; margin: 0 auto; }
+    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
+    nav { background: #13294b; display: flex; justify-content: center; padding: 10px 0; }
+    nav a { color: white; margin: 8px 15px; text-decoration: none; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+    .container { margin: 40px auto; padding: 0 20px; text-align: center; }
+    form { max-width: 400px; margin: 0 auto; text-align: left; }
     label { display: block; margin-top: 12px; }
     input { width: 100%; padding: 8px; margin-top: 4px; }
     button { margin-top: 16px; padding: 10px 16px; width: 100%; }
     .error { color: #b00020; margin-top: 8px; text-align: center; }
-
-    footer {
-      margin-top: 50px;
-      padding: 20px;
-      text-align: center;
-      background: #0a1a33;
-      color: white;
-      font-size: 0.9rem;
-    }
+    footer { margin-top: 50px; padding: 20px; text-align: center; background: #0a1a33; color: white; }
   </style>
 </head>
 
@@ -166,22 +105,32 @@
       ...data
     }));
 
-    // NEW: redirect support
+    // Redirect logic
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get("redirect");
+    const role = (data.captain_selector || "").toLowerCase().trim();
 
+    // Captains login flow
     if (redirect === "captains") {
-      window.location.href = "/Home/captains/access.html";
+      if (role === "captain" || role === "selector") {
+        window.location.href = "/Home/captains/access.html";
+      } else {
+        alert("You do not have access to the Captains Area.");
+      }
       return;
     }
 
-    // ⭐ FIXED: Player Availability redirect
+    // Player Availability login flow
     if (redirect === "availability") {
-      window.location.href = "/Home/player-availability/access.html";
+      if (role === "captain" || role === "selector") {
+        window.location.href = "/Home/captains/access.html";
+      } else {
+        window.location.href = "/Home/player-availability/access.html";
+      }
       return;
     }
 
-    // Default
+    // Default login → dashboard
     window.location.href = "dashboard.html";
   });
 </script>
