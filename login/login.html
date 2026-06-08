@@ -175,6 +175,13 @@
       return;
     }
 
+    // ⭐ FIXED: Player Availability redirect
+    if (redirect === "availability") {
+      window.location.href = "/Home/player-availability/access.html";
+      return;
+    }
+
+    // Default
     window.location.href = "dashboard.html";
   });
 </script>
