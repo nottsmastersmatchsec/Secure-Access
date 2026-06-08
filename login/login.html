@@ -1,65 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Player Login</title>
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabase = createClient(
-      "https://oqibuxukayzipkqxejjj.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
-    );
-
-    window.sendCode = async function () {
-      const email = document.getElementById("email").value.trim();
-      const status = document.getElementById("status");
-
-      if (!email) {
-        status.textContent = "Please enter your email.";
-        return;
-      }
-
-      status.textContent = "Sending login code...";
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        type: "email", // FORCE 6-digit OTP
-        options: {
-          shouldCreateUser: true,
-          emailRedirectTo: null // DISABLE magic link
-        }
-      });
-
-      if (error) {
-        status.textContent = error.message;
-        return;
-      }
-
-      status.textContent = "Code sent! Check your email...";
-      setTimeout(() => {
-        window.location.href = `verify.html?email=${encodeURIComponent(email)}`;
-      }, 1000);
-    };
-  </script>
-
+  <meta charset="UTF-8" />
+  <title>Club Login</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
-    body { font-family: Arial; background:#f5f5f5; padding:40px; }
-    .card { background:white; max-width:400px; margin:auto; padding:25px;
-      border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); text-align:center; }
-    input, button { width:90%; padding:12px; margin:10px 0; font-size:16px; }
-    button { background:#0077cc; color:white; border:none; border-radius:6px; cursor:pointer; }
-    button:hover { background:#005fa3; }
+    body { font-family: system-ui, sans-serif; max-width: 420px; margin: 40px auto; }
+    label { display: block; margin-top: 12px; }
+    input { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 16px; padding: 10px 16px; }
+    .error { color: #b00020; margin-top: 8px; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Player Login</h2>
-    <p>Enter your email to receive a one‑time login code.</p>
+  <h1>Member Login</h1>
 
-    <input id="email" type="email" placeholder="you@example.com">
-    <button onclick="sendCode()">Send login code</button>
+  <form id="login-form">
+    <label>
+      Email address
+      <input type="email" id="email" required />
+    </label>
 
-    <p id="status"></p>
-  </div>
+    <label>
+      Membership ID (BE Number)
+      <input type="text" id="be_number" required />
+    </label>
+
+    <label>
+      Date of birth
+      <input type="date" id="dob" required />
+    </label>
+
+    <button type="submit">Login</button>
+    <div id="error" class="error"></div>
+  </form>
+
+  <script>
+    // TODO: replace with your real values
+    const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_ANON_KEY";
+
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById("login-form");
+    const errorEl = document.getElementById("error");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      errorEl.textContent = "";
+
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      const beNumber = document.getElementById("be_number").value.trim();
+      const dobInput = document.getElementById("dob").value; // yyyy-mm-dd
+
+      if (!email || !beNumber || !dobInput) {
+        errorEl.textContent = "Please fill in all fields.";
+        return;
+      }
+
+      // Fetch matching row from Supabase
+      const { data, error } = await supabaseClient
+        .from("All")
+        .select("id, firstname, surname, email_address, be_number, dob, age_group, captain_selector")
+        .eq("email_address", email)
+        .eq("be_number", beNumber)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        errorEl.textContent = "Something went wrong. Please try again.";
+        return;
+      }
+
+      if (!data) {
+        errorEl.textContent = "No member found with those details.";
+        return;
+      }
+
+      // Compare DOB (stored as date in Supabase vs input yyyy-mm-dd)
+      const storedDob = data.dob; // e.g. "2005-03-14"
+      if (storedDob !== dobInput) {
+        errorEl.textContent = "Date of birth does not match our records.";
+        return;
+      }
+
+      // "Log in" – store minimal profile in localStorage
+      const session = {
+        loggedIn: true,
+        memberId: data.id,
+        firstname: data.firstname,
+        surname: data.surname,
+        email_address: data.email_address,
+        be_number: data.be_number,
+        age_group: data.age_group,
+        captain_selector: data.captain_selector,
+      };
+
+      localStorage.setItem("clubSession", JSON.stringify(session));
+
+      // Redirect to dashboard
+      window.location.href = "dashboard.html";
+    });
+  </script>
 </body>
 </html>
