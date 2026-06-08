@@ -105,33 +105,37 @@
       ...data
     }));
 
-    // Redirect logic
     const params = new URLSearchParams(window.location.search);
     const redirect = params.get("redirect");
     const role = (data.captain_selector || "").toLowerCase().trim();
 
-    // Captains login flow
-    if (redirect === "captains") {
-      if (role === "captain" || role === "selector") {
-        window.location.href = "/Home/captains/access.html";
-      } else {
-        alert("You do not have access to the Captains Area.");
-      }
-      return;
-    }
+    // ⭐ Delay ensures session is saved before redirect
+    setTimeout(() => {
 
-    // Player Availability login flow
-    if (redirect === "availability") {
-      if (role === "captain" || role === "selector") {
-        window.location.href = "/Home/captains/access.html";
-      } else {
-        window.location.href = "/Home/player-availability/access.html";
+      // CAPTAINS LOGIN FLOW
+      if (redirect === "captains") {
+        if (role === "captain" || role === "selector") {
+          window.location.href = "/Home/captains/access.html";
+        } else {
+          alert("You do not have access to the Captains Area.");
+        }
+        return;
       }
-      return;
-    }
 
-    // Default login → dashboard
-    window.location.href = "dashboard.html";
+      // PLAYER AVAILABILITY LOGIN FLOW
+      if (redirect === "availability") {
+        if (role === "captain" || role === "selector") {
+          window.location.href = "/Home/captains/access.html";
+        } else {
+          window.location.href = "/Home/player-availability/access.html";
+        }
+        return;
+      }
+
+      // DEFAULT → DASHBOARD
+      window.location.href = "dashboard.html";
+
+    }, 150); // ← critical fix
   });
 </script>
 
