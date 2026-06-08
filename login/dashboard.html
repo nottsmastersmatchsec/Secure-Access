@@ -2,139 +2,47 @@
 <html>
 <head>
   <title>Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://oqibuxukayzipkqxejjj.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
+    );
+
+    window.onload = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      document.getElementById("email").textContent = user.email;
+      document.getElementById("userid").textContent = user.id;
+    };
+
+    window.logout = async () => {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    };
+  </script>
 
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      background: #f5f5f5;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .menu-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      background: #0077cc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .menu-btn:hover {
-      background: #005fa3;
-    }
-
-    .logout-btn {
-      margin-top: 25px;
-      background: #444;
-    }
+    body { font-family: Arial; padding:40px; }
+    .card { background:white; max-width:500px; margin:auto; padding:25px;
+      border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    button { padding:10px 20px; background:#cc0000; color:white; border:none;
+      border-radius:6px; cursor:pointer; }
   </style>
 </head>
 <body>
+  <div class="card">
+    <h2>Welcome!</h2>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>User ID:</strong> <span id="userid"></span></p>
 
-<div class="card">
-  <h2>Dashboard</h2>
-  <p id="roleDisplay">Loading your role…</p>
-
-  <!-- ADMIN -->
-  <button id="adminBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/admin.html'">
-    Admin Panel
-  </button>
-
-  <!-- CAPTAIN + SELECTOR -->
-  <button id="captainBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/captain.html'">
-    Captain & Selector Area
-  </button>
-
-  <!-- FINANCE -->
-  <button id="financeBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/finance.html'">
-    Finance Area
-  </button>
-
-  <!-- COORDINATOR -->
-  <button id="coordBtn" class="menu-btn" style="display:none;" onclick="location.href='roles/coordinator.html'">
-    Coordinator Area
-  </button>
-
-  <button class="menu-btn logout-btn" onclick="logout()">Logout</button>
-</div>
-
-<script>
-  const supabase = supabase.createClient(
-    "https://oqibuxukayzipkqxejjj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
-  );
-
-  async function loadUserRole() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.href = "login.html";
-      return;
-    }
-
-    const userId = session.user.id;
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      document.getElementById("roleDisplay").innerText = "Unable to load role.";
-      return;
-    }
-
-    const role = data.role;
-    document.getElementById("roleDisplay").innerText = "Your role: " + role;
-
-    // ADMIN sees everything
-    if (role === "admin") {
-      adminBtn.style.display = "block";
-      captainBtn.style.display = "block";
-      financeBtn.style.display = "block";
-      coordBtn.style.display = "block";
-      return;
-    }
-
-    // CAPTAIN + SELECTOR
-    if (role === "captain" || role === "selector") {
-      captainBtn.style.display = "block";
-    }
-
-    // FINANCE
-    if (role === "finance") {
-      financeBtn.style.display = "block";
-    }
-
-    // COORDINATOR
-    if (role === "coordinator") {
-      coordBtn.style.display = "block";
-    }
-  }
-
-  loadUserRole();
-
-  async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = "login.html";
-  }
-</script>
-
+    <button onclick="logout()">Log out</button>
+  </div>
 </body>
 </html>
