@@ -2,85 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Player Availability — Access Check</title>
+  <title>Player Availability — DEBUG MODE</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <style>
-    body { margin: 0; font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
-    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
-    nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
-    nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
-    nav a:hover { text-decoration: underline; }
-
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-      text-align: center;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding: 20px;
-      text-align: center;
-      background: #0a1a33;
-      color: white;
-    }
-  </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Notts Masters Badminton</h1>
-  <p>Player Availability — Access Check</p>
-</header>
+<h2>DEBUG MODE — Player Availability Access</h2>
+<p>If you see this, redirects are not firing.</p>
 
-<div id="nav"></div>
-<script>
-  fetch("/Home/nav.html")
-    .then(r => r.text())
-    .then(html => document.getElementById("nav").innerHTML = html);
-</script>
-
-<div class="container" id="content">
-  <h2>Checking Access…</h2>
-  <p>Please wait.</p>
-</div>
-
-<footer>
-  © Notts Masters Badminton — Player Availability
-</footer>
+<pre id="debugBox" style="background:#eee;padding:20px;border-radius:8px;"></pre>
 
 <script>
   const raw = localStorage.getItem("clubSession");
+  const debug = document.getElementById("debugBox");
+
+  debug.innerHTML += "RAW SESSION:\n" + raw + "\n\n";
 
   if (!raw) {
+    debug.innerHTML += "NO RAW SESSION — redirecting to login...\n";
     window.location.href = "/Home/login/login.html?redirect=availability";
   }
 
   let session;
   try { session = JSON.parse(raw); }
   catch {
+    debug.innerHTML += "JSON PARSE FAILED — clearing session...\n";
     localStorage.removeItem("clubSession");
     window.location.href = "/Home/login/login.html?redirect=availability";
   }
 
+  debug.innerHTML += "PARSED SESSION:\n" + JSON.stringify(session, null, 2) + "\n\n";
+
   if (!session || !session.loggedIn) {
+    debug.innerHTML += "NOT LOGGED IN — redirecting...\n";
     window.location.href = "/Home/login/login.html?redirect=availability";
   }
 
   const role = (session.captain_selector || "").toLowerCase().trim();
+  debug.innerHTML += "DETECTED ROLE: " + role + "\n\n";
 
   if (role === "captain" || role === "selector") {
+    debug.innerHTML += "REDIRECT → captains page\n";
     window.location.href = "/Home/captains/access.html";
-    return;
+  } else {
+    debug.innerHTML += "REDIRECT → player form\n";
+    window.location.href = "/Home/player-availability/form.html";
   }
-
-  window.location.href = "/Home/player-availability/form.html";
 </script>
 
 </body>
