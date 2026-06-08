@@ -99,7 +99,6 @@
     <p>Member Login</p>
   </header>
 
-  <!-- Shared nav include -->
   <div id="nav"></div>
   <script>
     fetch("/Home/nav.html")
@@ -136,7 +135,7 @@
 
 <script>
   const SUPABASE_URL = "https://oqibuxukayzipkqxejjj.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0";
+  const SUPABASE_ANON_KEY = "YOUR_REAL_ANON_KEY";
 
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -166,6 +165,15 @@
       loggedIn: true,
       ...data
     }));
+
+    // NEW: redirect support
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+
+    if (redirect === "captains") {
+      window.location.href = "/Home/captains/access.html";
+      return;
+    }
 
     window.location.href = "dashboard.html";
   });
