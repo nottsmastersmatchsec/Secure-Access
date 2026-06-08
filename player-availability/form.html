@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Player Availability Form — Notts Masters Badminton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
+    nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
+    nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+
+    h2 { color: #0a1a33; margin-bottom: 20px; }
+
+    .details-box {
+      background: #e8f4ff;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      text-align: left;
+      font-weight: 600;
+      color: #0a1a33;
+    }
+
+    .logout-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 18px;
+      background: #c62828;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .logout-btn:hover { background: #a61f1f; }
+
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      text-align: center;
+      background: #0a1a33;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Notts Masters Badminton</h1>
+  <p>Player Availability Form</p>
+</header>
+
+<div id="nav"></div>
+<script>
+  fetch("/Home/nav.html")
+    .then(r => r.text())
+    .then(html => document.getElementById("nav").innerHTML = html);
+</script>
+
+<div class="container" id="content">
+  <h2>Loading your profile…</h2>
+  <p>Please wait.</p>
+</div>
+
+<footer>
+  © Notts Masters Badminton — Player Availability
+</footer>
+
+<script>
+  // Load session
+  const raw = localStorage.getItem("clubSession");
+
+  if (!raw) {
+    window.location.href = "/Home/login/login.html?redirect=availability";
+  }
+
+  let session;
+  try { session = JSON.parse(raw); }
+  catch {
+    localStorage.removeItem("clubSession");
+    window.location.href = "/Home/login/login.html?redirect=availability";
+  }
+
+  if (!session || !session.loggedIn) {
+    window.location.href = "/Home/login/login.html?redirect=availability";
+  }
+
+  const role = (session.captain_selector || "").toLowerCase().trim();
+
+  // Captains & selectors → redirect away
+  if (role === "captain" || role === "selector") {
+    window.location.href = "/Home/captains/access.html";
+  }
+
+  // Players → show form page
+  document.getElementById("content").innerHTML = `
+    <h2>Player Availability</h2>
+
+    <div class="details-box">
+      <div><strong>Name:</strong> ${session.firstname} ${session.surname}</div>
+      <div><strong>Email:</strong> ${session.email_address}</div>
+      <div><strong>Membership ID:</strong> ${session.be_number}</div>
+      <div><strong>Age Group:</strong> ${session.age_group}</div>
+      <div><strong>Role:</strong> Player</div>
+    </div>
+
+    <p style="font-size:1.1rem; color:#0a1a33; font-weight:600;">
+      The availability submission form will appear here.
+      <br><br>
+      We will build this next.
+    </p>
+
+    <a class="logout-btn" onclick="logout()">Log out</a>
+  `;
+
+  function logout() {
+    localStorage.removeItem("clubSession");
+    window.location.href = "/Home/login/login.html";
+  }
+</script>
+
+</body>
+</html>
 
