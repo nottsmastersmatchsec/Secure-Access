@@ -7,7 +7,6 @@
 </head>
 
 <body>
-
 <div class="page-wrapper">
 
 <header style="background:#0a1a33;color:white;padding:20px;text-align:center;">
@@ -22,8 +21,8 @@
     .then(html => document.getElementById("nav").innerHTML = html);
 </script>
 
-<div style="max-width:900px;margin:40px auto;text-align:center;font-size:1.2rem;">
-  <h2>Checking Access…</h2>
+<div style="max-width:900px;margin:40px auto;text-align:center;">
+  <h2>Checking access…</h2>
 </div>
 
 <footer style="margin-top:40px;padding:20px;text-align:center;background:#0a1a33;color:white;">
@@ -34,9 +33,11 @@
 
 <script>
   const raw = localStorage.getItem("clubSession");
-  if (!raw) window.location.href = "/Home/login/login.html?redirect=availability";
+  if (!raw) {
+    window.location.href = "/Home/login/availability-login.html";
+  }
 
-  let session = JSON.parse(raw);
+  const session = JSON.parse(raw);
   const role = (session.captain_selector || "").toLowerCase().trim();
 
   if (role === "captain" || role === "selector") {
