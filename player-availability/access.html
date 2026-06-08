@@ -74,23 +74,17 @@
     window.location.href = "/Home/login/login.html?redirect=availability";
   }
 
-  const role = (session.captain_selector || "").toLowerCase();
+  // Normalise role
+  const role = (session.captain_selector || "").toLowerCase().trim();
 
-  // If Captain or Selector → send to Captains Area
+  // ⭐ If Captain or Selector → go to Captains Area
   if (role === "captain" || role === "selector") {
     window.location.href = "/Home/captains/access.html";
+    return;
   }
 
-  // If Player → send to Player Availability Form (to be created)
-  if (!role || role.trim() === "") {
-    window.location.href = "/Home/availability/form.html";
-  }
-
-  // If something unexpected
-  document.getElementById("content").innerHTML = `
-    <h2>Access Error</h2>
-    <p>We could not determine your access level.</p>
-  `;
+  // ⭐ Anything else → treat as Player → go to Player Availability Form
+  window.location.href = "/Home/player-availability/form.html";
 </script>
 
 </body>
