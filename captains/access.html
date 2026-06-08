@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Captains & Selectors Area — Access Check</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+    header {
+      background: #0a1a33;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background: #13294b;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 10px 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 8px 15px;
+      font-weight: 600;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 15px;
+      color: #0a1a33;
+    }
+    .error {
+      margin-top: 12px;
+      color: #c62828;
+      font-size: 1rem;
+    }
+    .success a {
+      display: block;
+      margin: 12px 0;
+      padding: 12px;
+      background: #0a1a33;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .success a:hover {
+      background: #1a73e8;
+    }
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      text-align: center;
+      background: #0a1a33;
+      color: white;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Notts Masters Badminton</h1>
+  <p>Captains & Selectors Area — Secure Access</p>
+</header>
+
+<div id="nav"></div>
+<script>
+  fetch("/Home/nav.html")
+    .then(r => r.text())
+    .then(html => document.getElementById("nav").innerHTML = html);
+</script>
+
+<div class="container" id="content">
+  <h2>Checking Access…</h2>
+  <p>Please wait.</p>
+</div>
+
+<footer>
+  © Notts Masters Badminton — Captains & Selectors Area
+</footer>
+
+<script>
+  const raw = localStorage.getItem("clubSession");
+
+  if (!raw) {
+    window.location.href = "/Home/login/login.html?redirect=captains";
+  }
+
+  let session;
+  try { session = JSON.parse(raw); }
+  catch {
+    localStorage.removeItem("clubSession");
+    window.location.href = "/Home/login/login.html?redirect=captains";
+  }
+
+  const content = document.getElementById("content");
+
+  if (!session || !session.loggedIn) {
+    window.location.href = "/Home/login/login.html?redirect=captains";
+  }
+
+  const role = (session.captain_selector || "").toLowerCase();
+
+  if (role === "captain" || role === "selector") {
+    content.innerHTML = `
+      <h2>Access Granted</h2>
+      <p>Welcome, ${session.firstname} ${session.surname}</p>
+
+      <div class="success">
+        <a href="/Home/captains/players.html">Notts Masters Players</a>
+        <a href="/Home/captains/matches.html">Notts Masters Matches</a>
+        <a href="/Home/captains/calendar.html">Captains & Selectors Match Calendar</a>
+      </div>
+    `;
+  } else {
+    content.innerHTML = `
+      <h2>Access Denied</h2>
+      <p class="error">You do not have permission to access this area.</p>
+    `;
+  }
+</script>
+
+</body>
+</html>
