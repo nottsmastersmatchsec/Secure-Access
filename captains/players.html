@@ -1,0 +1,170 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Players — Notts Masters Badminton</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f5f5f5; color: #222; }
+    header { background: #0a1a33; color: white; padding: 20px; text-align: center; }
+    nav { background: #13294b; display: flex; justify-content: center; flex-wrap: wrap; padding: 10px 0; }
+    nav a { color: white; text-decoration: none; margin: 8px 15px; font-weight: 600; }
+    nav a:hover { text-decoration: underline; }
+
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px 40px; text-align: center; }
+
+    .auth-box {
+      max-width: 400px; margin: 40px auto; padding: 25px;
+      background: white; border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12); text-align: center;
+    }
+
+    .password-wrapper { position: relative; width: 100%; margin-bottom: 15px; }
+    .password-wrapper input {
+      width: 100%; padding: 10px 40px 10px 10px;
+      border-radius: 6px; border: 1px solid #ccc; font-size: 1rem;
+    }
+    .toggle-password {
+      position: absolute; right: 10px; top: 50%;
+      transform: translateY(-50%); cursor: pointer;
+      font-size: 1.2rem; color: #555;
+    }
+
+    button {
+      width: 100%; padding: 12px; border-radius: 6px; border: none;
+      background: #1a73e8; color: #fff; font-size: 1rem; font-weight: 600;
+    }
+    button:hover { background: #1558b4; }
+
+    .error { margin-top: 12px; color: #c62828; font-size: 0.9rem; display: none; }
+
+    .logged-in-banner {
+      background: #e8f4ff;
+      padding: 12px 15px;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #0a1a33;
+    }
+
+    iframe {
+      width: 100%; height: 800px; border: 0;
+      border-radius: 10px; background: white;
+    }
+
+    .back-button {
+      display: inline-block; margin: 25px auto 0; padding: 12px 20px;
+      background: #13294b; color: white; text-decoration: none;
+      font-weight: 600; border-radius: 8px;
+    }
+    .back-button:hover { background: #0a1a33; }
+
+    footer {
+      margin-top: 20px; padding: 20px;
+      text-align: center; background: #0a1a33; color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Notts Masters Badminton</h1>
+  <p>Players — Captains & Selectors Area</p>
+</header>
+
+<div id="nav"></div>
+<script>
+  fetch("/Home/nav.html")
+    .then(r => r.text())
+    .then(html => document.getElementById("nav").innerHTML = html);
+</script>
+
+<!-- LOAD HASHED PASSWORD -->
+<script src="/Home/auth/password.js"></script>
+
+<div class="container">
+
+  <!-- PASSWORD BOX -->
+  <div id="authBox" class="auth-box">
+    <h2>Enter Password</h2>
+    <p>Restricted to Captains & Selectors.</p>
+
+    <div class="password-wrapper">
+      <input type="password" id="password" placeholder="Enter password" autocomplete="off" />
+      <span class="toggle-password" id="togglePassword">👁️</span>
+    </div>
+
+    <button id="submitBtn">Unlock Players Sheet</button>
+    <div id="error" class="error">❌ Incorrect password. Please try again.</div>
+  </div>
+
+  <!-- UNLOCKED CONTENT -->
+  <div id="sheetContainer" style="display:none;">
+
+    <div class="logged-in-banner">
+      ✅ You are now logged in to the Captains & Selectors Area
+    </div>
+
+    <iframe src="https://docs.google.com/spreadsheets/d/14KBz9GBGR7p48cdM8p34FPGbhoaRUHX3OUhXRh9deNs/edit?gid=1020199153#gid=1020199153"></iframe>
+
+    <a href="/Home/captains/index.html" class="back-button">⬅ Back to Captains & Selectors Area</a>
+  </div>
+
+</div>
+
+<footer>
+  © Notts Masters Badminton — Players
+</footer>
+
+<script>
+  const PASSWORD_HASH = window.CAPTAINS_PASSWORD_HASH;
+  const SESSION_KEY = "captainsAuth";
+
+  const passwordInput = document.getElementById("password");
+  const togglePassword = document.getElementById("togglePassword");
+  const submitBtn = document.getElementById("submitBtn");
+  const errorEl = document.getElementById("error");
+  const authBox = document.getElementById("authBox");
+  const sheetContainer = document.getElementById("sheetContainer");
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+    return [...new Uint8Array(buf)]
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  function showSheet() {
+    authBox.style.display = "none";
+    sheetContainer.style.display = "block";
+  }
+
+  // Restore session
+  if (sessionStorage.getItem(SESSION_KEY) === PASSWORD_HASH) {
+    showSheet();
+  }
+
+  togglePassword.addEventListener("click", () => {
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    togglePassword.textContent = passwordInput.type === "password" ? "👁️" : "🙈";
+  });
+
+  async function unlock() {
+    const hash = await sha256(passwordInput.value.trim());
+
+    if (hash === PASSWORD_HASH) {
+      errorEl.style.display = "none";
+      sessionStorage.setItem(SESSION_KEY, PASSWORD_HASH);
+      showSheet();
+    } else {
+      errorEl.style.display = "block";
+    }
+  }
+
+  submitBtn.addEventListener("click", unlock);
+  passwordInput.addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+</script>
+
+</body>
+</html>
