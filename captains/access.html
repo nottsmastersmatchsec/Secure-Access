@@ -90,7 +90,7 @@
 
 <header>
   <h1>Notts Masters Badminton</h1>
-  <p>Captains & Selectors Area</p>
+  <p id="welcome-text">Captains & Selectors Area</p>
 </header>
 
 <div id="nav"></div>
@@ -114,6 +114,7 @@
 <script>
   const session = JSON.parse(localStorage.getItem("clubSession") || "{}");
   const content = document.getElementById("content");
+  const welcomeText = document.getElementById("welcome-text");
 
   // If not logged in → send back to login
   if (!session.loggedIn) {
@@ -121,6 +122,10 @@
   }
 
   const role = (session.captain_selector || "").toLowerCase().trim();
+  const name = session.first_name || "Captain";
+
+  // Update header welcome text
+  welcomeText.textContent = `Welcome – ${name}`;
 
   // If not captain/selector → deny access
   if (role !== "captain" && role !== "selector") {
@@ -134,7 +139,7 @@
     // Show the full captains area
     content.innerHTML = `
       <div class="container">
-        <h2>Welcome, ${session.first_name || "Captain"}</h2>
+        <h2>Welcome, ${name}</h2>
         <p>Select a resource below:</p>
 
         <a class="captain-btn" href="/Home/captains/players.html">Notts Masters Players</a>
