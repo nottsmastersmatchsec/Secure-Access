@@ -179,11 +179,12 @@
     }
 
     const { data, error } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("email_address", emailInput)
-      .eq("be_number", beNumberInput)
-      .maybeSingle();
+  .from("profiles")
+  .select("*")
+  .eq("email_address", emailInput)
+  .eq("be_number", beNumberInput)
+  .maybeSingle();   // or .single() if you expect exactly one row
+
 
     if (error) {
       console.error(error);
