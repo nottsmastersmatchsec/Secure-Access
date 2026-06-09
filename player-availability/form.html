@@ -186,71 +186,71 @@
   document.getElementById("ageGroup").value = ageGroup;
 
   async function submitUnavailability() {
-    const date = document.getElementById("unavailableDate").value;
-    const msg = document.getElementById("formMessage");
+  const date = document.getElementById("unavailableDate").value;
+  const msg = document.getElementById("formMessage");
 
-    if (!date) {
-      msg.textContent = "Please select a date.";
-      msg.className = "message error";
-      return;
-    }
-
-    const payload = {
-      action: "addAvailability",
-      data: {
-        status: "Active",
-        version: "1.0",
-        event: "Unavailable",
-        ageGroup: ageGroup,
-        startDateTime: date,
-        endDateTime: date,
-        playerName: fullName,
-        playerEmail: email
-      }
-    };
-
-    await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    msg.textContent = "Your unavailability has been recorded.";
-    msg.className = "message success";
-
-    document.getElementById("unavailableDate").value = "";
-
-    loadDates();
+  if (!date) {
+    msg.textContent = "Please select a date.";
+    msg.className = "message error";
+    return;
   }
+
+  const payload = {
+    action: "addAvailability",
+    data: {
+      event: "Unavailable",
+      age: ageGroup,               // FIXED
+      startDate: date,             // FIXED
+      endDate: date,               // FIXED
+      playerName: fullName,
+      playerEmail: email
+    }
+  };
+
+  await fetch(WEB_APP_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  msg.textContent = "Your unavailability has been recorded.";
+  msg.className = "message success";
+
+  document.getElementById("unavailableDate").value = "";
+
+  loadDates();
+}
+
 
   async function loadDates() {
-    const list = document.getElementById("datesList");
-    list.innerHTML = "Loading…";
+  const list = document.getElementById("datesList");
+  list.innerHTML = "Loading…";
 
-    const res = await fetch(
-      `${WEB_APP_URL}?action=getAvailability&email=${encodeURIComponent(email)}`
-    );
+  const res = await fetch(
+    `${WEB_APP_URL}?action=getAvailability&email=${encodeURIComponent(email)}`
+  );
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!data.length) {
-      list.innerHTML = "<p>No unavailable dates recorded.</p>";
-      return;
-    }
-
-    list.innerHTML = data
-      .map(item => {
-        const d = new Date(item.startDateTime);
-        const formatted = d.toLocaleDateString("en-GB", {
-          weekday: "short",
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        });
-        return `<div class="date-item">${formatted}</div>`;
-      })
-      .join("");
+  if (!data.length) {
+    list.innerHTML = "<p>No unavailable dates recorded.</p>";
+    return;
   }
+
+  list.innerHTML = data
+    .map(item => {
+      const d = new Date(item.startDate);   // FIXED
+      const formatted = d.toLocaleDateString("en-GB", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+      return `<div class="date-item">${formatted}</div>`;
+    })
+    .join("");
+}
+
 
   document.getElementById("submitBtn").addEventListener("click", submitUnavailability);
 
