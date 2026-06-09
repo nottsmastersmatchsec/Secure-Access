@@ -162,7 +162,8 @@
 </footer>
 
 <script>
-  const PASSWORD_HASH = window.CAPTAINS_PASSWORD_HASH;   // from password.js
+  // Pull hash from password.js
+  const PASSWORD_HASH = window.CAPTAINS_PASSWORD_HASH;
   const SESSION_KEY = "captainsAuth";
 
   const DOC_URL_1 = "/Home/captains/players.html";
@@ -186,7 +187,7 @@
       .join("");
   }
 
-  // If already authenticated this session, show links immediately
+  // Restore session
   if (sessionStorage.getItem(SESSION_KEY) === PASSWORD_HASH) {
     successEl.style.display = "block";
     docLink1.href = DOC_URL_1;
@@ -194,12 +195,14 @@
     docLink3.href = DOC_URL_3;
   }
 
+  // Toggle password visibility
   togglePassword.addEventListener("click", () => {
     const type = passwordInput.type === "password" ? "text" : "password";
     passwordInput.type = type;
     togglePassword.textContent = type === "password" ? "👁️" : "🙈";
   });
 
+  // Unlock function
   async function unlock() {
     const value = passwordInput.value.trim();
     const hash = await sha256(value);
@@ -220,7 +223,6 @@
   }
 
   submitBtn.addEventListener("click", unlock);
-
   passwordInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") unlock();
   });
