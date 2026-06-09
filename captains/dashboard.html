@@ -2,33 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Captains Dashboard</title>
+  <title>Captains Dashboard — Notts Masters Badminton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-
 <body>
-<div class="page-wrapper">
+  <h1>Captains Dashboard</h1>
+  <p>Quick overview of fixtures, teams, and announcements.</p>
 
-<header style="background:#0a1a33;color:white;padding:20px;text-align:center;">
-  <h1>Captains & Selectors Dashboard</h1>
-</header>
+  <div id="dashboard"></div>
 
-<div id="nav"></div>
-<script>
-  fetch("/Home/nav.html")
-    .then(r => r.text())
-    .then(html => document.getElementById("nav").innerHTML = html);
-</script>
-
-<div style="max-width:900px;margin:40px auto;">
-  <h2>Welcome, Captain</h2>
-  <p>Select an option from the navigation menu.</p>
-</div>
-
-<footer style="margin-top:40px;padding:20px;text-align:center;background:#0a1a33;color:white;">
-  © Notts Masters Badminton — Captains Area
-</footer>
-
-</div>
+  <script>
+    const session = JSON.parse(localStorage.getItem("clubSession") || "{}");
+    if (!session.loggedIn) {
+      window.location.href = "/Home/captains/login.html";
+    } else {
+      document.getElementById("dashboard").innerHTML = `
+        <p>Welcome, ${session.firstname} ${session.surname}</p>
+        <p>Your role: ${session.captain_selector}</p>
+      `;
+    }
+  </script>
 </body>
 </html>
+
