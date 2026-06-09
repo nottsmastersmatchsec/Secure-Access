@@ -4,221 +4,59 @@
   <meta charset="UTF-8" />
   <title>Captains Login — Notts Masters Badminton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Stable Supabase CDN (GitHub Pages safe) -->
-  <script src="https://esm.sh/@supabase/supabase-js@2"></script>
-
-  <style>
-    html, body { margin: 0; padding: 0; height: 100%; }
-
-    body {
-      font-family: system-ui, sans-serif;
-      background: #f5f5f5;
-      color: #222;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .page-wrapper {
-      max-width: 1000px;
-      margin: 0 auto;
-      flex: 1;
-      width: 100%;
-    }
-
-    header {
-      background: #0a1a33;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    nav {
-      background: #13294b;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding: 10px 0;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin: 8px 15px;
-      font-weight: 600;
-    }
-
-    nav a:hover { text-decoration: underline; }
-
-    .container {
-      max-width: 100%;
-      margin: 40px auto;
-      padding: 0 20px;
-      text-align: center;
-    }
-
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    label { display: block; margin-top: 12px; }
-    input { width: 100%; padding: 8px; margin-top: 4px; }
-    button { margin-top: 16px; padding: 10px 16px; width: 100%; }
-
-    .error { color: #b00020; margin-top: 8px; text-align: center; }
-
-    footer {
-      margin-top: 50px;
-      padding: 20px;
-      text-align: center;
-      background: #0a1a33;
-      color: white;
-      font-size: 0.9rem;
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-
 <body>
-<div class="page-wrapper">
-
-<header>
-  <h1>Notts Masters Badminton</h1>
-  <p>Captains & Selectors Login</p>
-</header>
-
-<div id="nav"></div>
-<script>
-  fetch("/Home/nav.html")
-    .then(r => r.text())
-    .then(html => document.getElementById("nav").innerHTML = html);
-</script>
-
-<div class="container">
-  <h2>Login</h2>
-
+  <h1>Captains & Selectors Login</h1>
   <form id="login-form">
-    <label>Email address
-      <input type="email" id="email" required />
-    </label>
-
-    <label>Membership ID (BE Number)
-      <input type="text" id="be_number" required />
-    </label>
-
-    <label>Date of birth
-      <input type="text" id="dob" placeholder="DD/MM/YYYY" required />
-    </label>
-
+    <label>Email <input type="email" id="email" required /></label><br>
+    <label>BE Number <input type="text" id="be_number" required /></label><br>
+    <label>DOB (DD/MM/YYYY) <input type="text" id="dob" required /></label><br>
     <button type="submit">Login</button>
-    <div id="error" class="error"></div>
+    <div id="error"></div>
   </form>
-</div>
 
-<footer>
-  © Notts Masters Badminton — Captains Login
-</footer>
-
-</div>
-
-<script>
-  const supabaseClient = supabase.createClient(
-    "https://oqibuxukayzipkqxejjj.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xaWJ1eHVrYXl6aXBrcXhlampqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MTY5MDcsImV4cCI6MjA5NjQ5MjkwN30.rG3saM2ayExDzSjMFnI9x1NVza4SmVIJ7UbAI9NGpH0"
-  );
-
-  const form = document.getElementById("login-form");
-  const errorEl = document.getElementById("error");
-
-  function normaliseDob(input) {
-    if (!input) return "";
-    if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
-
-    const cleaned = input.replace(/[\/ ]/g, "-");
-    const match = cleaned.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-
-    if (match) {
-      const [_, dd, mm, yyyy] = match;
-      return `${yyyy}-${mm}-${dd}`;
-    }
-    return "";
-  }
-
-  function normaliseSupabaseDob(dob) {
-    if (!dob) return "";
-    if (dob.includes("T")) return dob.split("T")[0];
-
-    const cleaned = dob.replace(/[\/ ]/g, "-");
-    const match = cleaned.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-
-    if (match) {
-      const [_, dd, mm, yyyy] = match;
-      return `${yyyy}-${mm}-${dd}`;
-    }
-
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dob)) return dob;
-
-    return "";
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorEl.textContent = "";
-
-    const emailInput = document.getElementById("email").value.trim().toLowerCase();
-    const beNumberInput = document.getElementById("be_number").value.trim();
-    const dobRaw = document.getElementById("dob").value.trim();
-
-    const dobInput = normaliseDob(dobRaw);
-
-    if (!dobInput) {
-      errorEl.textContent = "Please enter a valid date of birth.";
-      return;
-    }
-
-    const { data, error } = await supabaseClient
-  .from("profiles")
-  .select("*")
-  .eq("email_address", emailInput)
-  .eq("be_number", beNumberInput)
-  .maybeSingle();   // or .single() if you expect exactly one row
-
-
-    if (error) {
-      console.error(error);
-      errorEl.textContent = "Something went wrong. Please try again.";
-      return;
-    }
-
-    if (!data) {
-      errorEl.textContent = "No member found with those details.";
-      return;
-    }
-
-    const supaDob = normaliseSupabaseDob(data.dob);
-
-    if (supaDob !== dobInput) {
-      errorEl.textContent = "No member found with those details.";
-      return;
-    }
-
-    const role = (data.captain_selector || "").toLowerCase().trim();
-
-    if (role !== "captain" && role !== "selector") {
-      errorEl.textContent = "You do not have access to the Captains Area.";
-      return;
-    }
-
-    localStorage.setItem(
-      "clubSession",
-      JSON.stringify({ loggedIn: true, ...data })
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://oqibuxukayzipkqxejjj.supabase.co",
+      "YOUR_NEW_ANON_KEY"
     );
 
-    window.location.href = "/Home/captains/access.html";
-  });
-</script>
+    function normaliseDob(input) {
+      if (!input) return "";
+      const cleaned = input.replace(/[\/ ]/g, "-");
+      const match = cleaned.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+      if (match) {
+        const [_, dd, mm, yyyy] = match;
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      return "";
+    }
 
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById("email").value.trim().toLowerCase();
+      const beNumberInput = document.getElementById("be_number").value.trim();
+      const dobInput = normaliseDob(document.getElementById("dob").value.trim());
+
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("email_address", emailInput)
+        .eq("be_number", beNumberInput)
+        .maybeSingle();
+
+      if (error || !data) return document.getElementById("error").textContent = "No member found";
+
+      const supaDob = (data.dob || "").split("T")[0];
+      if (supaDob !== dobInput) return document.getElementById("error").textContent = "DOB mismatch";
+
+      const role = (data.captain_selector || "").toLowerCase().trim();
+      if (role !== "captain" && role !== "selector") return document.getElementById("error").textContent = "No access";
+
+      localStorage.setItem("clubSession", JSON.stringify({ loggedIn: true, ...data }));
+      window.location.href = "/Home/captains/access.html";
+    });
+  </script>
 </body>
 </html>
