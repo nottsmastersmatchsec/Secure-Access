@@ -17,7 +17,6 @@
       overflow-x: hidden;
     }
 
-    /* ⭐ CRITICAL — match homepage */
     body > div {
       margin: 0 !important;
       padding: 0 !important;
@@ -53,7 +52,6 @@
 
     nav a:hover { text-decoration: underline; }
 
-    /* ⭐ CRITICAL — match homepage */
     .container {
       max-width: 100%;
       margin: 40px auto;
@@ -112,7 +110,7 @@
     </label>
 
     <label>Date of birth
-      <input type="date" id="dob" required />
+      <input type="text" id="dob" placeholder="DD/MM/YYYY" required />
     </label>
 
     <button type="submit">Login</button>
@@ -213,9 +211,6 @@
 
     window.location.href = "/Home/captains/access.html";
   });
-</script>
-
-
 </script>
 
 </body>
