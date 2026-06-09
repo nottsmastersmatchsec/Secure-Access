@@ -167,7 +167,7 @@
 </footer>
 
 <script>
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVyybiZpUBjJ1MidS8ZFk-XgPfFlm2rZuAWAXBW99wxgNURZLCuxxRS6IR5lq5zLhN4w/exec"; // paste your deployed Apps Script URL
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzVyybiZpUBjJ1MidS8ZFk-XgPfFlm2rZuAWAXBW99wxgNURZLCuxxRS6IR5lq5zLhN4w/exec";
 
   const session = JSON.parse(localStorage.getItem("clubSession") || "{}");
 
@@ -175,11 +175,12 @@
     window.location.href = "/Home/login/captains-login.html";
   }
 
+  // FIXED: Email must exist in session
   const first = session.first_name || session.firstname || "";
   const last = session.last_name || session.surname || "";
   const fullName = `${first} ${last}`.trim();
   const ageGroup = session.ageGroup || session.age_group || "";
-  const email = session.email_address || session.email || session.emailAddress;
+  const email = session.email; // ← REQUIRED FIELD
 
   document.getElementById("playerName").value = fullName;
   document.getElementById("ageGroup").value = ageGroup;
