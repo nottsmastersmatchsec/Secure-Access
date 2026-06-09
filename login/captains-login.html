@@ -4,14 +4,39 @@
   <meta charset="UTF-8" />
   <title>Captains Login — Notts Masters Badminton</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Correct Supabase v2 CDN -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 40px; }
+    h1 { text-align: center; }
+    form { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+    label { display: block; margin-top: 15px; font-weight: bold; }
+    input { width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc; }
+    button { width: 100%; margin-top: 20px; padding: 12px; background: #0066cc; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #004c99; }
+    #error { margin-top: 15px; text-align: center; color: red; font-weight: bold; }
+  </style>
 </head>
+
 <body>
+
   <h1>Captains & Selectors Login</h1>
+
   <form id="login-form">
-    <label>Email <input type="email" id="email" required /></label><br>
-    <label>BE Number <input type="text" id="be_number" required /></label><br>
-    <label>DOB (DD/MM/YYYY) <input type="text" id="dob" required /></label><br>
+    <label>Email
+      <input type="email" id="email" required />
+    </label>
+
+    <label>BE Number
+      <input type="text" id="be_number" required />
+    </label>
+
+    <label>Date of Birth (DD/MM/YYYY)
+      <input type="text" id="dob" required />
+    </label>
+
     <button type="submit">Login</button>
     <div id="error"></div>
   </form>
@@ -19,25 +44,31 @@
   <script>
     const supabaseClient = supabase.createClient(
       "https://oqibuxukayzipkqxejjj.supabase.co",
-      "YOUR_NEW_ANON_KEY"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5eHlmbXRwZ2Zrc29mZGJkeWNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjYwODEsImV4cCI6MjA5NjYwMjA4MX0.9qv57mnqBD7giP9YvpPFWBVAXAsV8Z4yzkWq9KKcN3M"
     );
 
     function normaliseDob(input) {
       if (!input) return "";
       const cleaned = input.replace(/[\/ ]/g, "-");
       const match = cleaned.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-      if (match) {
-        const [_, dd, mm, yyyy] = match;
-        return `${yyyy}-${mm}-${dd}`;
-      }
-      return "";
+      if (!match) return "";
+      const [_, dd, mm, yyyy] = match;
+      return `${yyyy}-${mm}-${dd}`;
     }
 
     document.getElementById("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const errorEl = document.getElementById("error");
+      errorEl.textContent = "";
+
       const emailInput = document.getElementById("email").value.trim().toLowerCase();
       const beNumberInput = document.getElementById("be_number").value.trim();
       const dobInput = normaliseDob(document.getElementById("dob").value.trim());
+
+      if (!dobInput) {
+        errorEl.textContent = "Please enter DOB as DD/MM/YYYY";
+        return;
+      }
 
       const { data, error } = await supabaseClient
         .from("profiles")
@@ -46,17 +77,30 @@
         .eq("be_number", beNumberInput)
         .maybeSingle();
 
-      if (error || !data) return document.getElementById("error").textContent = "No member found";
+      if (error || !data) {
+        errorEl.textContent = "No member found with those details";
+        return;
+      }
 
       const supaDob = (data.dob || "").split("T")[0];
-      if (supaDob !== dobInput) return document.getElementById("error").textContent = "DOB mismatch";
+      if (supaDob !== dobInput) {
+        errorEl.textContent = "Date of birth does not match our records";
+        return;
+      }
 
       const role = (data.captain_selector || "").toLowerCase().trim();
-      if (role !== "captain" && role !== "selector") return document.getElementById("error").textContent = "No access";
+      if (role !== "captain" && role !== "selector") {
+        errorEl.textContent = "You do not have access to the Captains Area";
+        return;
+      }
 
+      // Save session locally
       localStorage.setItem("clubSession", JSON.stringify({ loggedIn: true, ...data }));
+
+      // Correct GitHub Pages redirect
       window.location.href = "/Home/captains/access.html";
     });
   </script>
+
 </body>
 </html>
