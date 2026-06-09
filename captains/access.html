@@ -8,7 +8,7 @@
   <style>
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, sans-serif;
       background: #f5f5f5;
       color: #222;
     }
@@ -21,7 +21,6 @@
       position: relative;
     }
 
-    /* Top-right logout link */
     #logout-top {
       position: absolute;
       right: 20px;
@@ -81,7 +80,6 @@
       background: #1a73e8;
     }
 
-    /* Logout button inside container */
     .logout-btn {
       margin-top: 25px;
       padding: 12px;
@@ -120,8 +118,6 @@
 <header>
   <h1>Notts Masters Badminton</h1>
   <p id="welcome-text">Captains & Selectors Area</p>
-
-  <!-- Top-right logout -->
   <span id="logout-top">Logout</span>
 </header>
 
@@ -148,35 +144,29 @@
   const content = document.getElementById("content");
   const welcomeText = document.getElementById("welcome-text");
 
-  // If not logged in → send back to login
   if (!session.loggedIn) {
     window.location.href = "/Home/login/captains-login.html";
   }
 
   const role = (session.captain_selector || "").toLowerCase().trim();
 
-  // Detect name from any possible field
   const name =
-    session.first_name ||
     session.firstname ||
+    session.first_name ||
     session.forename ||
     session.name ||
     session.full_name ||
     "Captain";
 
-  // Update header welcome text
   welcomeText.textContent = `Welcome – ${name}`;
 
-  // Logout function
   function logout() {
     localStorage.removeItem("clubSession");
     window.location.href = "/Home/login/captains-login.html";
   }
 
-  // Attach logout to top link
   document.getElementById("logout-top").addEventListener("click", logout);
 
-  // If not captain/selector → deny access
   if (role !== "captain" && role !== "selector") {
     content.innerHTML = `
       <div class="container">
@@ -186,7 +176,6 @@
       </div>
     `;
   } else {
-    // Show the full captains area
     content.innerHTML = `
       <div class="container">
         <h2>Welcome, ${name}</h2>
